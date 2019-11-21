@@ -1,4 +1,4 @@
-//Pseudocode
+//Game Art
 //by Eddson Jose
 
 //declare variables for:
