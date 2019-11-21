@@ -1,0 +1,25 @@
+canvas {
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, 5%)
+}
+
+html, body {
+  background-color: black;
+}
+
+button {
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  font-size: 24px;
+  background-color: transparent;
+  border: none;
+  color: #33302a;
+}
+
+button:hover {
+  color: #998f7d;
+}
