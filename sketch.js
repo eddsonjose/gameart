@@ -1,26 +1,22 @@
 //Game Art
 //by Eddson Jose
-
-//declare variables for:
-//game state
-//time score
-//buttons
 let gameState;
 let startButton;
 let toggleSound;
 let exitButton;
 let backgroundImage;
-let playerSprite, playerX = 100, playerY = 250, playerSpeed = 1;
-let peopleSprite, peopleX, peopleY, peopleSprites;
+let playerSprite, playerX = 100, playerY = 250, playerSpeed = 0.5;
+let peopleSprite, peopleX = 0, peopleY = 0, peopleXX = 0, peopleYY = 0, peopleSprites;
 let people = [];
 let hit = false;
-
+let score = 0;
+//-------------------------------------------------------------------------
 function preload() {
   backgroundImage = loadImage('images/background.png');
   playerSprite = loadImage('images/playerSprite.png');
   peopleSprite = loadImage('images/peopleSprite.png');
 }
-
+//-------------------------------------------------------------------------
 function setup() {
   createCanvas(1500, 500);
   background(50);
@@ -29,33 +25,13 @@ function setup() {
     people.push(new peopleSpriteClass());
   }
 }
-
+//-------------------------------------------------------------------------
 function draw() {
   if (gameState === 1) {
     gameScreen();
   }
-
-
-
-  //if game state is "titlescreen"
-  //then execute the titlescreen function
-
-  //if game state is "gamescreen"
-  //then execute the gamescreen function
-
-  //if player presses "escape" key
-  //change game state to "pausescreen"
-  //then execute the pausescreen function
-
-  //if player presses "return to game" button
-  //change game state to "gamescreen"
-  //then execute the gamescreen function
-
-  //if player presses "leave game" button
-  //change game state to "titlescreen"
-  //then execute the titlescreen function
 }
-
+//-------------------------------------------------------------------------
 function titleScreen() {
   gameState = 0;
   image(backgroundImage, 0, 0);
@@ -67,26 +43,21 @@ function titleScreen() {
   toggleSound.size(200);
   toggleSound.position(width/2-100, height*0.6);
   toggleSound.mousePressed(soundToggle);
-  exitButton = createButton('Exit Game');
-  exitButton.size(200);
-  exitButton.position(width/2-100, height*0.7);
-  exitButton.mousePressed(exitGame);
-  //display custom background
-  //display game title
-  //display button for "play game"
-  //display button for "leave game"
-  //display toggle for "sound"
-  //display diagram for controls
+  // exitButton = createButton('Exit Game');
+  // exitButton.size(200);
+  // exitButton.position(width/2-100, height*0.7);
+  // exitButton.mousePressed(exitGame);
 }
-
+//-------------------------------------------------------------------------
 function gameScreen() {
+  // image(backgroundImage, 0, 0);
   gameState = 1;
   background(200);
-  text('gameScreen', width/2, height/3);
   startButton.hide();
   toggleSound.hide();
-  exitButton.hide();
+  // exitButton.hide();
   //display image of player sprite
+  fill(0, 0);
   rect(playerX, playerY, 12, 20);
   image(playerSprite, playerX, playerY);
   if (keyIsDown(87)) {playerY -= playerSpeed;}//w
@@ -98,8 +69,13 @@ function gameScreen() {
     people[i].move();
     people[i].display();
   }
+  fill(0);
+  noStroke();
+  textSize(24);
+  textAlign(RIGHT);
+  text(score + playerX, 1480, 25);
 }
-
+//-------------------------------------------------------------------------
 class peopleSpriteClass {
   constructor() {
     this.x = 1500 + random(0, 1500);
@@ -114,25 +90,21 @@ class peopleSpriteClass {
     }
   }
   display() {
+    fill(0, 0);
+    noStroke();
+    rect(this.x, this.y, 12, 20);
     image(peopleSprite, this.x, this.y);
+    hit = collideRectRect(playerX, playerY, 12, 20, this.x, this.y, 12, 20);
+    if(hit){
+      this.speed = 0.5;
+      playerX -= 1;
+      // console.log(hit);
+    } else {
+      this.speed = 1;
+    }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//-------------------------------------------------------------------------
 function pauseScreen() {
   text('Pause', width/2, height/2);
   exitButton.show();
@@ -143,6 +115,6 @@ function soundToggle() {
   //toggle volume 0 or 100
 }
 
-function exitGame() {
-  //exit game
-}
+// function exitGame() {
+//   //exit game
+// }

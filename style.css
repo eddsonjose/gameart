@@ -23,3 +23,7 @@ button {
 button:hover {
   color: #998f7d;
 }
+
+audio {
+  top: 60%;
+}
