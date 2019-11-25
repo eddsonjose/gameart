@@ -5,25 +5,34 @@ let startButton;
 let toggleSound;
 let exitButton;
 let backgroundImage;
-let playerSprite, playerX = 100, playerY = 250, playerSpeed = 0.5;
-let peopleSprite, peopleX = 0, peopleY = 0, peopleXX = 0, peopleYY = 0, peopleSprites;
+let playerSprite, playerX = 100, playerY = 250, playerSpeed = 0.5;//0.5 original speed
+let peopleSprite, peopleSprite2, peopleSprite3;
+let peopleX = 0, peopleY = 0, peopleXX = 0, peopleYY = 0;
 let people = [];
 let hit = false;
 let score = 0;
+let counter = 0;
+let timer = 0;
 //-------------------------------------------------------------------------
 function preload() {
   backgroundImage = loadImage('images/background.png');
-  playerSprite = loadImage('images/playerSprite.png');
-  peopleSprite = loadImage('images/peopleSprite.png');
+  // backgroundImage = createImg('images/gameArt_background.gif');
+  playerSprite = createImg("images/playerSprite.gif");
+  // peopleSprite = loadImage('images/peopleSprite.png');
+  // peopleSprite2 = createImg('images/peopleSprite2.gif');
+  // peopleSprite2 = loadImage('images/peopleSprite2.png');
+  // peopleSprite3 = createImg('images/peopleSprite3.gif');
+  peopleSprite3 = loadImage('images/peopleSprite3.png');
 }
 //-------------------------------------------------------------------------
 function setup() {
   createCanvas(1500, 500);
   background(50);
   titleScreen();
-  for (let i = 0; i < 400; i++) {
+  for (let i = 0; i < 400; i++) {//original is 400
     people.push(new peopleSpriteClass());
   }
+  playerSprite.hide();
 }
 //-------------------------------------------------------------------------
 function draw() {
@@ -58,8 +67,10 @@ function gameScreen() {
   // exitButton.hide();
   //display image of player sprite
   fill(0, 0);
-  rect(playerX, playerY, 12, 20);
-  image(playerSprite, playerX, playerY);
+  rect(playerX, playerY, 8, 16);
+  // image(playerSprite, playerX, playerY);
+  playerSprite.show();
+  playerSprite.position(playerX + 16, playerY + 23);//----------------------
   if (keyIsDown(87)) {playerY -= playerSpeed;}//w
   if (keyIsDown(65)) {playerX -= playerSpeed;}//a
   if (keyIsDown(83)) {playerY += playerSpeed;}//s
@@ -73,7 +84,15 @@ function gameScreen() {
   noStroke();
   textSize(24);
   textAlign(RIGHT);
-  text(score + playerX, 1480, 25);
+  text(score, 1480, 45);
+  text(timer + playerX - 100, 1480, 25);
+  counter++;
+  if (counter === 60) {
+    score++;
+    timer++;
+    counter = 0;
+    console.log(timer);
+  }
 }
 //-------------------------------------------------------------------------
 class peopleSpriteClass {
@@ -93,14 +112,25 @@ class peopleSpriteClass {
     fill(0, 0);
     noStroke();
     rect(this.x, this.y, 12, 20);
-    image(peopleSprite, this.x, this.y);
-    hit = collideRectRect(playerX, playerY, 12, 20, this.x, this.y, 12, 20);
+    image(peopleSprite3, this.x, this.y);
+    // peopleSprite3.position(this.x, this.y);
+    hit = collideRectRect(playerX, playerY, 8, 16, this.x, this.y, 12, 20);
     if(hit){
       this.speed = 0.5;
       playerX -= 1;
+      timer -= 0.5;
       // console.log(hit);
     } else {
       this.speed = 1;
+    }
+    if(playerX <= 1) {
+      playerX++;
+    } else if (playerX >= 1490) {
+      playerX--;
+    } else if (playerY <= 1) {
+      playerY++;
+    } else if (playerY >= 480) {
+      playerY--;
     }
   }
 }
