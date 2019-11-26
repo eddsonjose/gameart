@@ -2,8 +2,9 @@
 //by Eddson Jose
 let gameState;
 let startButton;
-let toggleSound;
-let exitButton;
+let gameReset;
+let feeling = 'nervousness';
+// let moveControls;
 let backgroundImage;
 let playerSprite, playerX = 100, playerY = 250, playerSpeed = 0.5;//0.5 original speed
 let peopleSprite, peopleSprite2, peopleSprite3;
@@ -15,7 +16,7 @@ let counter = 0;
 let timer = 0;
 //-------------------------------------------------------------------------
 function preload() {
-  backgroundImage = loadImage('images/background.png');
+  backgroundImage = loadImage('images/gameArt_background.png');
   // backgroundImage = createImg('images/gameArt_background.gif');
   playerSprite = createImg("images/playerSprite.gif");
   // peopleSprite = loadImage('images/peopleSprite.png');
@@ -39,32 +40,33 @@ function draw() {
   if (gameState === 1) {
     gameScreen();
   }
+  if (keyIsDown(13)) {gameScreen();}//enter
 }
 //-------------------------------------------------------------------------
 function titleScreen() {
   gameState = 0;
   image(backgroundImage, 0, 0);
-  startButton = createButton('Play Game');
+  startButton = createButton('Press "Enter" to Play');
   startButton.size(200);
-  startButton.position(width/2-100, height/2);
+  startButton.style('width:300px');
+  startButton.position(width/2-130, height/2.1);
   startButton.mousePressed(gameScreen);
-  toggleSound = createButton('Sound');
-  toggleSound.size(200);
-  toggleSound.position(width/2-100, height*0.6);
-  toggleSound.mousePressed(soundToggle);
-  // exitButton = createButton('Exit Game');
-  // exitButton.size(200);
-  // exitButton.position(width/2-100, height*0.7);
-  // exitButton.mousePressed(exitGame);
+  gameReset = createButton('Press "F5" to Reload');
+  gameReset.size(200);
+  gameReset.style('width:300px');
+  gameReset.position(width/2-130, height*0.58);
+  moveControls = createButton('"WASD" to Move');
+  moveControls.size(200);
+  moveControls.position(width/2-80, height*0.95);
 }
 //-------------------------------------------------------------------------
 function gameScreen() {
   // image(backgroundImage, 0, 0);
   gameState = 1;
-  background(200);
+  background('#ffeed1');
   startButton.hide();
-  toggleSound.hide();
-  // exitButton.hide();
+  gameReset.hide();
+  moveControls.hide();
   //display image of player sprite
   fill(0, 0);
   rect(playerX, playerY, 8, 16);
@@ -84,14 +86,13 @@ function gameScreen() {
   noStroke();
   textSize(24);
   textAlign(RIGHT);
-  text(score, 1480, 45);
-  text(timer + playerX - 100, 1480, 25);
+  // text(score + ' seconds', 1480, 45);
+  text(timer + playerX - 100 + ' nervousness', 1480, 25);
   counter++;
   if (counter === 60) {
-    score++;
+    // score++;
     timer++;
     counter = 0;
-    console.log(timer);
   }
 }
 //-------------------------------------------------------------------------
@@ -137,13 +138,13 @@ class peopleSpriteClass {
 //-------------------------------------------------------------------------
 function pauseScreen() {
   text('Pause', width/2, height/2);
-  exitButton.show();
+  // moveControls.show();
   //pause gameScreen
 }
 
-function soundToggle() {
-  //toggle volume 0 or 100
-}
+// function soundToggle() {
+//   //toggle volume 0 or 100
+// }
 
 // function exitGame() {
 //   //exit game
