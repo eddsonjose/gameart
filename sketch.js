@@ -71,7 +71,6 @@ function titleScreen() {
   moveControls = createButton('"WASD" to Move');
   moveControls.size(200);
   moveControls.position(width/2-80, height*0.95);
-
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
