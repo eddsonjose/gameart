@@ -1,10 +1,23 @@
 //Game Art
 //by Eddson Jose
+let description = [
+  {
+    text_1: "A person with social anxiety...",
+    text_2: "may practice engaging in social interactions...",
+    text_3: "to decrease their feelings of nervousness...",
+    text_4: "in the long run.",
+    text_5: "Without constant practice...",
+    text_6: "social interactions become...",
+    text_7: "something feared.",
+    text_8: "..."
+  }
+];
 let gameState, startButton, gameReset, moveControls;
 let backgroundImage, gameScreenBackground, clouds_overlay;
 let gameScreen_x = 0, gameScreen_x2, scrollSpeed = 0.5, clouds_overlay_x = -1500;
 let playerSprite, playerX = 100, playerY = 250, playerSpeed = 1;//0.5 original speed
 let peopleSprite, peopleSprite2, peopleSprite3;
+let peopleSprite2Gif;
 let peopleX = 0, peopleY = 0, peopleXX = 0, peopleYY = 0, people = [], peopleTwo = [];
 let hit = false;
 let counter = 0;
@@ -13,6 +26,8 @@ let sky_0, sky_0_speed = 0.1, sky_0_x = 0, sky_0_x2;
 let sky_1, sky_1_speed = 0.2, sky_1_x = 0, sky_1_x2;
 let sky_2, sky_2_speed = 0.3, sky_2_x = 0, sky_2_x2;
 let ground, ground_speed = 0.1, ground_x = 0, ground_x2;
+let cloud_shadows, cloud_shadow_speed = 0.5, cloud_shadow_x = 0, cloud_shadow_x2;
+let aerial_perspective, title;
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 function preload() {//createImg is for gif
@@ -24,6 +39,9 @@ function preload() {//createImg is for gif
   sky_1 = loadImage('images/sky_1.png');
   sky_2 = loadImage('images/sky_2.png');
   ground = loadImage('images/ground.png');
+  cloud_shadow = loadImage('images/cloud_shadows.png');
+  aerial_perspective = loadImage('images/aerial_perspective.png');
+  title = loadImage('images/title.png');
   //people & player
   playerSprite = createImg("images/playerSprite.gif");
   peopleSprite2 = loadImage('images/peopleSprite2.png');
@@ -33,10 +51,10 @@ function preload() {//createImg is for gif
 //-------------------------------------------------------------------------
 function setup() {
   createCanvas(1500, 500); background(50); titleScreen();
-  for (let i = 0; i < 150; i++) {
+  for (let i = 0; i < 80; i++) {
     people.push(new peopleSpriteClass());
   }
-  for (let i = 0; i < 150; i++) {
+  for (let i = 0; i < 200; i++) {
     peopleTwo.push(new peopleSpriteClassTwo());
   }
   playerSprite.hide();
@@ -45,66 +63,51 @@ function setup() {
   sky_1_x2 = width;
   sky_2_x2 = width;
   ground_x2 = -width;
+  cloud_shadow_x2 = width;
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 function draw() {
   clouds();
-
+  if (gameState === 0) {image(title, 0, 0);}
   if (gameState === 1) {gameScreen();}//gameScreen
   if (keyIsDown(13)) {gameScreen();}//enter
+  cloudShadows();
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 function titleScreen() {
   gameState = 0;
-  image(backgroundImage, 0, 0);
   startButton = createButton('Press "Enter" to Play');
   startButton.size(200);
-  startButton.style('width:300px');
-  startButton.position(width/2-130, height/2.1);
+  startButton.style('width:800px');
+  startButton.position(width/4, height/2.2);
   startButton.mousePressed(gameScreen);
-  gameReset = createButton('Press "F5" to Reload');
+  gameReset = createButton('Press "F5" for Main Menu');
   gameReset.size(200);
-  gameReset.style('width:300px');
-  gameReset.position(width/2-130, height*0.58);
-  moveControls = createButton('"WASD" to Move');
-  moveControls.size(200);
-  moveControls.position(width/2-80, height*0.95);
+  gameReset.style('width:800px');
+  gameReset.position(width/4, height*0.55);
+  // moveControls = createButton('"WASD" to Move');
+  // moveControls.size(200);
+  // moveControls.position(width/2-80, height*0.99);
+
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 function gameScreen() {
   gameState = 1;
-
-  // image(gameScreenBackground, gameScreen_x, 0);
-  // image(gameScreenBackground, gameScreen_x2, 0);
-  //
-  // gameScreen_x -= scrollSpeed;
-  // gameScreen_x2 -= scrollSpeed;
-  //
-  // if (gameScreen_x < -width){
-  //   gameScreen_x = width;
-  // }
-  // if (gameScreen_x2 < -width){
-  //   gameScreen_x2 = width;
-  // }
-
-  clouds();
-
-
-  // background('#ffeed1');
   //hide buttons
-  startButton.hide(); gameReset.hide(); moveControls.hide();
+  startButton.hide(); gameReset.hide();
+  // moveControls.hide();
   //display image of player sprite
   fill(0, 0);
   rect(playerX, playerY, 8, 16);
   playerSprite.show();
   playerSprite.position(playerX + 16, playerY + 23);
   //wasd controls
-  if (keyIsDown(87)) {playerY -= playerSpeed;}//w
+  if (keyIsDown(87)) {playerY -= playerSpeed - 0.6;}//w
   if (keyIsDown(65)) {playerX -= playerSpeed;}//a
-  if (keyIsDown(83)) {playerY += playerSpeed;}//s
+  if (keyIsDown(83)) {playerY += playerSpeed - 0.6;}//s
   if (keyIsDown(68)) {playerX += playerSpeed;}//d
   //display image of people sprite
   for (let i = 0; i < people.length; i++) {
@@ -116,11 +119,24 @@ function gameScreen() {
     peopleTwo[i].display();
   }
   //score/nervousness
-  fill(0); noStroke(); textSize(24); textAlign(RIGHT);
+  fill(255); noStroke(); textSize(24); textAlign(RIGHT);
   text(score + playerX - 100 + ' nervousness', 1480, 25);
   counter++;
   if (counter === 60) {score++; counter = 0;}
+  //collisions
+  if(playerX <= 1) {playerX = 2;}
+  else if (playerX >= 1490) {playerX--;}
+  else if (playerY <= 150) {playerY = 151;}
+  else if (playerY >= 480) {playerY = 479;}
 
+  if (playerY < 70) {
+    fill(255);
+    text('Life is too precious. Dont dream too long.', 460, 30);
+  }
+  if (playerY > 550) {
+    fill(0);
+    text('Life is too precious. Dont dream too long.', 460, 490);
+  }
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
@@ -154,6 +170,43 @@ function clouds() {
   if (ground_x2 < 0){
     ground_x2 = width;}
 }
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+function cloudShadows() {
+  image(cloud_shadow, cloud_shadow_x, 0);
+  image(cloud_shadow, cloud_shadow_x2, 0);
+
+  cloud_shadow_x += cloud_shadow_speed;
+  cloud_shadow_x2 += cloud_shadow_speed;
+
+  if (cloud_shadow_x > width){
+    cloud_shadow_x = -width;}
+  if (cloud_shadow_x2 > width){
+    cloud_shadow_x2 = -width;}
+
+  image(aerial_perspective, 0, 0);
+}
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+function showText() {
+
+}
+
+function FadeIn() {
+
+    var sound = document.getElementById('audiosnippet');
+
+    var vol = $.global.volume;
+
+    if ( vol < 100 )
+        {
+            sound.volume = (vol / 100);
+            $.global.volume = $.global.volume + 10;
+            setTimeout(function() { FadeIn() }, 1200);
+        }
+
+    }
+
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 function pauseScreen() {
