@@ -17,7 +17,7 @@ class peopleSpriteClass {
     image(peopleSprite3, this.x, this.y);
     hit = collideRectRect(playerX, playerY, 8, 16, this.x, this.y, 12, 20);
     //hit event
-    if(hit){this.speed = 0.1; playerX -= 3; score -= 1; showText();}
+    if(hit){this.speed = 0.1; playerX -= 3; score -= 1;}
     else {this.speed = random(0.5, 2);}
   }
 }

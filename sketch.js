@@ -4,12 +4,12 @@ let description = [
   {
     text_1: "A person with social anxiety...",
     text_2: "may practice engaging in social interactions...",
-    text_3: "to decrease their feelings of nervousness...",
-    text_4: "in the long run.",
+    text_3: "to decrease their feelings of nervousness.",
+    text_4: ".",
     text_5: "Without constant practice...",
     text_6: "social interactions become...",
     text_7: "something feared.",
-    text_8: "..."
+    text_8: "Practice..."
   }
 ];
 let gameState, startButton, gameReset, moveControls;
@@ -28,6 +28,7 @@ let sky_2, sky_2_speed = 0.3, sky_2_x = 0, sky_2_x2;
 let ground, ground_speed = 0.1, ground_x = 0, ground_x2;
 let cloud_shadows, cloud_shadow_speed = 0.5, cloud_shadow_x = 0, cloud_shadow_x2;
 let aerial_perspective, title;
+let description_x = 1800;
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 function preload() {//createImg is for gif
@@ -51,10 +52,10 @@ function preload() {//createImg is for gif
 //-------------------------------------------------------------------------
 function setup() {
   createCanvas(1500, 500); background(50); titleScreen();
-  for (let i = 0; i < 80; i++) {
+  for (let i = 0; i < 80; i++) {//80 = hard
     people.push(new peopleSpriteClass());
   }
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < 200; i++) {//200 = hard
     peopleTwo.push(new peopleSpriteClassTwo());
   }
   playerSprite.hide();
@@ -69,8 +70,9 @@ function setup() {
 //-------------------------------------------------------------------------
 function draw() {
   clouds();
-  if (gameState === 0) {image(title, 0, 0);}
+  if (gameState === 0) {image(title, 0, 0);}//titleScreen
   if (gameState === 1) {gameScreen();}//gameScreen
+  if (gameState === 2) {pauseScreen();}//pauseScreen
   if (keyIsDown(13)) {gameScreen();}//enter
   cloudShadows();
 }
@@ -90,7 +92,6 @@ function titleScreen() {
   // moveControls = createButton('"WASD" to Move');
   // moveControls.size(200);
   // moveControls.position(width/2-80, height*0.99);
-
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
@@ -109,6 +110,11 @@ function gameScreen() {
   if (keyIsDown(65)) {playerX -= playerSpeed;}//a
   if (keyIsDown(83)) {playerY += playerSpeed - 0.6;}//s
   if (keyIsDown(68)) {playerX += playerSpeed;}//d
+  if (keyIsDown(80)) {//p, pauseScreen
+    gameState = 2;
+    startButton.show();
+    gameReset.show();
+  }
   //display image of people sprite
   for (let i = 0; i < people.length; i++) {
     people[i].move();
@@ -122,13 +128,13 @@ function gameScreen() {
   fill(255); noStroke(); textSize(24); textAlign(RIGHT);
   text(score + playerX - 100 + ' nervousness', 1480, 25);
   counter++;
-  if (counter === 60) {score++; counter = 0;}
+  if (counter === 60) {score += 7; counter = 0;}
   //collisions
   if(playerX <= 1) {playerX = 2;}
-  else if (playerX >= 1490) {playerX--;}
+  else if (playerX >= 1490) {playerX--; end();}
   else if (playerY <= 150) {playerY = 151;}
   else if (playerY >= 480) {playerY = 479;}
-
+  //if player passes the boundaries
   if (playerY < 70) {
     fill(255);
     text('Life is too precious. Dont dream too long.', 460, 30);
@@ -137,6 +143,11 @@ function gameScreen() {
     fill(0);
     text('Life is too precious. Dont dream too long.', 460, 490);
   }
+  //scrolling description
+  fill(255); textSize(72); textAlign(LEFT);
+  text('A person with social anxiety may practice engaging in social interactions to decrease their feelings of nervousness. Avoiding social interactions increases nervousness. The current is endless. Define your own goal.', description_x, 90);
+  description_x -= 0.5;
+  if (description_x < -8000) {description_x = 3000;}
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
@@ -165,10 +176,8 @@ function clouds() {
   if (sky_1_x2 > width){sky_1_x2 = -width;}
   if (sky_2_x > width){sky_2_x = -width;}
   if (sky_2_x2 > width){sky_2_x2 = -width;}
-  if (ground_x < 0){
-    ground_x = width;}
-  if (ground_x2 < 0){
-    ground_x2 = width;}
+  if (ground_x < 0){ground_x = width;}
+  if (ground_x2 < 0){ground_x2 = width;}
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
@@ -188,37 +197,17 @@ function cloudShadows() {
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
-function showText() {
+function end() {
 
 }
-
-function FadeIn() {
-
-    var sound = document.getElementById('audiosnippet');
-
-    var vol = $.global.volume;
-
-    if ( vol < 100 )
-        {
-            sound.volume = (vol / 100);
-            $.global.volume = $.global.volume + 10;
-            setTimeout(function() { FadeIn() }, 1200);
-        }
-
-    }
-
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 function pauseScreen() {
-  text('Pause', width/2, height/2);
+  gameState = 2;
+  fill('#33302a'); textSize(42);
+  text('P A U S E', width/2 - 100, height/2 - 75);
+  startButton.show(); gameReset.show();
+  playerSprite.hide();
   // moveControls.show();
   //pause gameScreen
 }
-
-// function soundToggle() {
-//   //toggle volume 0 or 100
-// }
-
-// function exitGame() {
-//   //exit game
-// }
