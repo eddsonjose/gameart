@@ -1,17 +1,6 @@
 //Game Art
 //by Eddson Jose
-let description = [
-  {
-    text_1: "A person with social anxiety...",
-    text_2: "may practice engaging in social interactions...",
-    text_3: "to decrease their feelings of nervousness.",
-    text_4: ".",
-    text_5: "Without constant practice...",
-    text_6: "social interactions become...",
-    text_7: "something feared.",
-    text_8: "Practice..."
-  }
-];
+let peopleSprites = [];
 let gameState, startButton, gameReset, moveControls;
 let backgroundImage, gameScreenBackground, clouds_overlay, pause;
 let gameScreen_x = 0, gameScreen_x2, scrollSpeed = 0.5, clouds_overlay_x = -1500;
@@ -74,6 +63,7 @@ function draw() {
   if (gameState === 0) {image(title, 0, 0);}//titleScreen
   if (gameState === 1) {gameScreen();}//gameScreen
   if (gameState === 2) {pauseScreen();}//pauseScreen
+  if (gameState === 3) {end();}//endScreen
   if (keyIsDown(13)) {gameScreen();}//enter
   cloudShadows();
 }
@@ -127,39 +117,49 @@ function gameScreen() {
     peopleTwo[i].display();
   }
   //score/nervousness
-  fill(255); noStroke(); textSize(24); textAlign(RIGHT);
-  text(score + playerX - 100 + ' nervousness', 1480, 25);
   score2 = score + playerX - 100
+  fill(255); noStroke(); textSize(24); textAlign(RIGHT);
+  if (score2 >= 0) {
+    text(score2 + ' NERVOUSNESS', 1480, 25);
+  }
+  if (score2 < 0) {
+    text(score2 * -1 + ' CONFIDENCE', 1480, 25);
+  }
   counter++;
   if (counter === 60) {score += 10; counter = 0;}
   //collisions
   if(playerX <= 1) {playerX = 2;}
-  else if (playerX >= 1490) {playerX--; end();}
+  else if (playerX >= 1490) {
+    playerX = 100;
+    playerY = height/2;
+    end();
+  }
   else if (playerY <= 150) {playerY = 151;}
   else if (playerY >= 480) {playerY = 479;}
   //if player passes the boundaries
   if (playerY < 70) {
     fill(255);
-    text('Life is too precious. Dont dream too long.', 460, 30);
+    text('Life is too precious. Dont dream too long.', 1100, 25);
   }
   if (playerY > 550) {
-    fill(0);
-    text('Life is too precious. Dont dream too long.', 460, 490);
+    fill(255);
+    text('Life is too precious. Dont dream too long.', 1100, 25);
   }
   //scrolling description
   fill(255); textSize(72); textAlign(LEFT);
-  text('A person with social anxiety may practice engaging in social interactions to decrease their feelings of nervousness. Avoiding social interactions increases nervousness. The current is endless. Define your own goal.', description_x, 90);
-  description_x -= 0.5;
-  if (description_x < -8000) {description_x = 3000;}
+  text('Practice engaging in social interactions to decrease the feeling of nervousness. Avoid social interactions to increase nervousness. The current is endless. Define your own goal.', description_x, 90);
+  description_x -= 0.8;
+  if (description_x < -7000) {description_x = 3000;}
   //player's speed doubles if nervousness is below -100
   textSize(24);
   if (score2 < -100) {
-    text('Social interactions are now easier', 15, 25);
+    text('Confidence is greater than 100. Social interactions are now easier.', 15, 25);
     playerSpeed = 2;
   } else {
     playerSpeed = 1;
   }
-  //endgame
+  //score does not go below -1000
+  if (score2 <= -1000) {score += 100;}
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
@@ -210,7 +210,38 @@ function cloudShadows() {
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 function end() {
-
+  gameState = 3;
+  fill(0, 0);
+  rect(playerX, playerY, 8, 16);
+  playerSprite.position(playerX + 16, playerY + 23);
+  //wasd controls
+  if (keyIsDown(87)) {playerY -= playerSpeed - 0.6;}//w
+  if (keyIsDown(65)) {playerX -= playerSpeed;}//a
+  if (keyIsDown(83)) {playerY += playerSpeed - 0.6;}//s
+  if (keyIsDown(68)) {playerX += playerSpeed;}//d
+  if (keyIsDown(80)) {//p, pauseScreen
+    gameState = 3;
+    startButton.show();
+    // gameReset.show();
+  }
+  //collisions
+  if(playerX <= 1) {playerX = 2;}
+  else if (playerX >= 1490) {playerX = 1490;}
+  else if (playerY <= 150) {playerY = 151;}
+  else if (playerY >= 480) {playerY = 479;}
+  //if player passes the boundaries
+  textSize(24);
+  if (playerY < 70) {
+    fill(255);
+    text('Life is too precious. Dont dream too long.', 800, 25);
+  }
+  if (playerY > 550) {
+    fill(255);
+    text('Life is too precious. Dont dream too long.', 800, 25);
+  }
+  fill(255);
+  textSize(72);
+  text('Will be continued', width/2 - 250, height/2);
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
