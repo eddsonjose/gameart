@@ -74,6 +74,7 @@ function titleScreen() {
   startButton = createButton('Press "Enter" to Play');
   startButton.size(200);
   startButton.style('width:800px');
+  startButton.class('blinking');
   startButton.position(width/4, height*0.56);
   startButton.mousePressed(gameScreen);
   // gameReset = createButton('Press "F5" for Main Menu');
