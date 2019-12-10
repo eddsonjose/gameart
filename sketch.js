@@ -34,7 +34,7 @@ function preload() {//createImg is for gif
   aerial_perspective = loadImage('images/aerial_perspective.png');
   title = loadImage('images/title.png');
   //people & player
-  playerSprite = createImg("images/playerSprite.gif");
+  playerSprite = loadImage("images/playerSprite.png");//gif = createImg
   peopleSprite2 = loadImage('images/peopleSprite2.png');
   peopleSprite3 = loadImage('images/peopleSprite3.png');
 }
@@ -48,7 +48,7 @@ function setup() {
   for (let i = 0; i < 150; i++) {//200 = hard
     peopleTwo.push(new peopleSpriteClassTwo());
   }
-  playerSprite.hide();
+  // playerSprite.hide();
   gameScreen_x2 = width;
   sky_0_x2 = width;
   sky_1_x2 = width;
@@ -73,7 +73,7 @@ function titleScreen() {
   gameState = 0;
   startButton = createButton('Press "Enter" to Play');
   startButton.size(200);
-  startButton.style('width:800px');
+  startButton.style('width:800px');//original 800px
   startButton.class('blinking');
   startButton.position(width/4, height*0.56);
   startButton.mousePressed(gameScreen);
@@ -94,10 +94,13 @@ function gameScreen() {
   // gameReset.hide();
   // moveControls.hide();
   //display image of player sprite
-  fill(0, 0);
+  fill(0, 50);
   rect(playerX, playerY, 8, 16);
-  playerSprite.show();
-  playerSprite.position(playerX + 16, playerY + 23);
+  image(playerSprite, playerX, playerY);
+
+  // playerSprite.show();
+  // playerSprite.position(playerX, playerY);
+  //x = + 16, y = +23
   //wasd controls
   if (keyIsDown(87)) {playerY -= playerSpeed - 0.6;}//w
   if (keyIsDown(65)) {playerX -= playerSpeed;}//a
