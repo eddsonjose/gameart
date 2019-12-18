@@ -17,7 +17,7 @@ let sky_2, sky_2_speed = 0.3, sky_2_x = 0, sky_2_x2;
 let ground, ground_speed = 0.1, ground_x = 0, ground_x2;
 let cloud_shadows, cloud_shadow_speed = 0.5, cloud_shadow_x = 0, cloud_shadow_x2;
 let aerial_perspective, title;
-let description_x = 1800; description_x2 = 1600; description_x3 = 1600;
+let description_x = 1800; description_x2 = 1600; description_x3 = 1600, description_x4 = 1600;
 // let playerSpeed2 = 5;
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
@@ -69,10 +69,10 @@ function setup() {
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 function draw() {
-  clouds();//titleScreen
+  clouds();
   if (gameState === 0) {image(title, 0, 0);}
   else if (gameState === 1) {gameScreen();}//gameScreen
-  else if (gameState === 2) {gameScreen2();}//end scene
+  else if (gameState === 2) {gameScreen2();}
   else if (gameState === 3) {gameScreen3();}
   else if (gameState === 4) {gameScreen4();}
   if (keyIsDown(13)) {gameScreen();}//enter
@@ -84,9 +84,9 @@ function titleScreen() {
   gameState = 0;
   startButton = createButton('Press "Enter" to Play');
   startButton.size(200);
-  startButton.style('width:800px');//original 800px
+  startButton.style('width:100%');//original 800px
   startButton.class('blinking');
-  startButton.position(width/4, height*0.56);
+  startButton.position(0, height*0.56);
   startButton.mousePressed(gameScreen);
   }
 //-------------------------------------------------------------------------
@@ -210,7 +210,7 @@ function gameScreen2() {
   fill(255); textSize(72); textAlign(LEFT);
   text('IF THE SITUATION IS OFTEN TOO STRESSFUL AND IT BEGINS TO NEGATIVELY AFFECT YOUR LIFE, ASK FOR HELP.', description_x2, 90);
   description_x2 -= 0.8;
-  if (description_x2 < -7000) {description_x2 = 3000;}
+  if (description_x2 < -5000) {description_x2 = 3000;}
   //directions
   counter3++;
   if (counter3 <= 450) {
@@ -251,8 +251,14 @@ function gameScreen3() {
   else if (playerSpriteOppositeX >= 190) {playerSpriteOppositeX = 190;}
   else if (playerSpriteOppositeY <= 150) {playerSpriteOppositeY = 151;}
   else if (playerSpriteOppositeY >= 480) {playerSpriteOppositeY = 479;}
-  //if player passes the boundaries
 
+  //scrolling description
+  fill(255); textSize(72); textAlign(LEFT);
+  text('<-', description_x3, 90);
+  description_x3 -= 5;
+  if (description_x3 < -1000) {description_x3 = 3000;}
+
+  //if player passes the boundaries
   textSize(24); fill('#33302a'); textAlign(CENTER);
   if (playerY < 70) {text('LIFE IS TOO PRECIOUS. DON\'T DREAM TOO LONG.', width/2, 150);}
   if (playerY > 550) {text('LIFE IS TOO PRECIOUS. DON\'T DREAM TOO LONG.', width/2, 150);}
@@ -263,9 +269,15 @@ function gameScreen4() {
   gameState = 4;
   //scrolling description
   fill(255); textSize(72); textAlign(LEFT);
-  text('GAME OVER. MADE BY EDDSON JOSE', description_x3, 90);
-  description_x3 -= 0.8;
-  if (description_x3 < -7000) {description_x3 = 3000;}
+  text('CREATED BY EDDSON JOSE', description_x4, 90);
+  description_x4 -= 0.8;
+  if (description_x4 < -2000) {description_x4 = 3000;}
+
+  //display image of people sprite
+  for (let i = 0; i < peopleThree.length; i++) {
+      peopleThree[i].move();
+      peopleThree[i].display();
+    }
 
   fill('#33302a');
   textSize(14);
